@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Title extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         "title",
         "resturant_id",
@@ -17,8 +17,8 @@ class Title extends Model
 
     protected $table = "resutrants_titles";
     public $timestamps = false;
-    
-    //Relations 
+
+    //Relations
     public function resturant()
     {
         return $this->belongsTo('App\Models\Resturant\Resturant', 'resturant_id');
@@ -28,5 +28,4 @@ class Title extends Model
     {
         return $this->belongsTo('App\Models\Language', 'language_id');
     }
-
 }

@@ -4,10 +4,14 @@ namespace App\Models\Tour;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Tour extends Model
+class Tour extends Model implements HasMedia
 {
+    use InteractsWithMedia;
     use HasFactory;
+
     protected $fillable = [
         "expired_date",
         "duration",
@@ -86,6 +90,48 @@ class Tour extends Model
         return $this->belongsToMany('App\Models\Activity', 'tour_activities', 'tour_id', 'activity_id', 'id', 'id');
     }
 
+    protected $appends = [
+        'tours_titles_as_array',
+        'intros_as_array',
+        'locations_as_array',
+        'transportation_as_array',
+        'includes_as_array',
+        'excludes_as_array',
+        'first_name',
+    ];
 
+    public function getToursTitlesAsArrayAttribute()
+    {
+        return $this->titles->pluck('title', 'language_id')->toArray();
+    }
 
+    public function getIntrosAsArrayAttribute()
+    {
+        return $this->intros->pluck('intro', 'language_id')->toArray();
+    }
+
+    public function getLocationsAsArrayAttribute()
+    {
+        return $this->locations->pluck('location', 'language_id')->toArray();
+    }
+
+    public function getTransportationAsArrayAttribute()
+    {
+        return $this->transportations->pluck('transportation', 'language_id')->toArray();
+    }
+
+    public function getIncludesAsArrayAttribute()
+    {
+        return $this->includes->pluck('include', 'language_id')->toArray();
+    }
+
+    public function getExcludesAsArrayAttribute()
+    {
+        return $this->excludes->pluck('exclude', 'language_id')->toArray();
+    }
+
+    public function getFirstNameAttribute()
+    {
+        return $this->titles()->first()->title; // Safely fetch the first name of the destination
+    }
 }

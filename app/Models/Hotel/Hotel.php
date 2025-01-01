@@ -33,9 +33,13 @@ class Hotel extends Model implements HasMedia
         "avg_money_rating",
         "avg_location_rating",
         "lowest_room_price",
-    ] ;
+    ];
 
     public $table = "hotels";
+
+    protected $casts = [
+        'location' => 'json',
+    ];
 
     // Relations
     public function names()
@@ -70,9 +74,8 @@ class Hotel extends Model implements HasMedia
 
     public function reasons()
     {
-        return $this->hasMany('App\Models\Reason', 'hotel_id');
+        return $this->belongsToMany('App\Models\Reason', 'hotel_reasons', 'hotel_id', 'reason_id', 'id', 'id');
     }
-
     public function features()
     {
         return $this->belongsToMany('App\Models\Feature', 'hotel_features', 'hotel_id', 'feature_id', 'id', 'id');
@@ -89,10 +92,10 @@ class Hotel extends Model implements HasMedia
         return Resturant::select('*')
             ->with(["titles" => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             }, "descriptions"  => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             }])
             ->selectRaw("{$haversine} AS distance")
             ->whereRaw("{$haversine} <= ?", [$maxDistance])
@@ -136,5 +139,4 @@ class Hotel extends Model implements HasMedia
         // Transform the related names into an array of [language_id => name]
         return $this->addresses->pluck('address', 'language_id')->toArray();
     }
-
 }

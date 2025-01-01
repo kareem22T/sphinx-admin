@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Day extends Model
 {
     use HasFactory;
-            
+
     protected $fillable = [
         "thumbnail",
         "tour_id",
@@ -16,8 +16,8 @@ class Day extends Model
 
     protected $table = "tour_days";
     public $timestamps = false;
-    
-    //Relations 
+
+    //Relations
     public function tour()
     {
         return $this->belongsTo('App\Models\Tour\Tour', 'tour_id');
@@ -32,5 +32,22 @@ class Day extends Model
         return $this->hasMany('App\Models\Tour\Day\Description', 'day_id');
     }
 
+    protected $appends = [
+        'day_titles_as_array',
+        'day_descriptions_as_array',
+    ];
 
+    public function getDayTitlesAsArrayAttribute()
+    {
+        return $this->titles->pluck('title', 'language_id')->toArray();
+    }
+    public function getDayDescriptionsAsArrayAttribute()
+    {
+        return $this->descriptions->pluck('description', 'language_id')->toArray();
+    }
+
+    public function getFirstTitleAttribute()
+    {
+        return $this->titles->first()?->title; // Safely fetch the first title
+    }
 }

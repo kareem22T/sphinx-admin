@@ -10,10 +10,12 @@ class Feature extends Model
     use HasFactory;
     protected $fillable = [
         "icon_path",
+        "name"
     ];
 
     protected $table = "features";
     public $timestamps = false;
+    protected $appends = ['features_names_as_array'];
 
     // Relations
     public function hotels()
@@ -24,5 +26,11 @@ class Feature extends Model
     public function names()
     {
         return $this->hasMany('App\Models\FeatureName', 'feature_id');
-    }    
+    }
+
+    public function getFeaturesNamesAsArrayAttribute()
+    {
+        // Transform the related names into an array of [language_id => name]
+        return $this->names->pluck('name', 'language_id')->toArray();
+    }
 }

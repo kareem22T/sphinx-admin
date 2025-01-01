@@ -30,13 +30,13 @@ class DestinationResource extends Resource
                 Forms\Components\TextInput::make('name_ar')
                     ->required()
                     ->maxLength(100),
-                    Forms\Components\Textarea::make('desc_ar')
+                Forms\Components\Textarea::make('desc_ar')
                     ->required()
                     ->columnSpanFull(),
-                    Forms\Components\Textarea::make('desc_en')
+                Forms\Components\Textarea::make('desc_en')
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\FileUpload::make('thumbnail_path')->label('Thumbnail'),
+                Forms\Components\FileUpload::make('thumbnail_path')->image()->label('Thumbnail'),
             ]);
     }
 

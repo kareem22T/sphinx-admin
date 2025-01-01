@@ -4,9 +4,14 @@ namespace App\Filament\Resources\Hotel;
 
 use App\Filament\Resources\Hotel\HotelResource\Pages;
 use App\Filament\Resources\Hotel\HotelResource\RelationManagers;
+use App\Forms\Components\GooglePlacesField;
+use App\Forms\Components\LocationPicker;
 use App\Models\Hotel\Hotel;
 use App\Models\Language;
 use Filament\Forms;
+use Filament\Forms\Components\BelongsToManyMultiSelect;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Components\TextInput;
@@ -16,6 +21,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Tapp\FilamentGoogleAutocomplete\Forms\Components\GoogleAutocomplete;
 
 class HotelResource extends Resource
 {
@@ -23,6 +29,7 @@ class HotelResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
 
+    protected static ?string $navigationGroup = 'Hotel';
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -73,14 +80,45 @@ class HotelResource extends Resource
                     ->options([
                         'hotel' => 'Hotel',
                         'cottage' => 'Cottage',
-                        ])
-                        ->placeholder('Select a type')
-                        ->required(),
+                    ])
+                    ->placeholder('Select a type')
+                    ->required(),
                 TextInput::make('phone')->columnSpanFull()->required(),
                 TextInput::make('check_in')->required(),
                 TextInput::make('check_out')->required(),
-                // Single file upload for multiple images
+                GoogleAutocomplete::make('google_search')
+                    ->label('Hotel Address')
+                    ->autocompleteSearchDebounce(500)
+                    ->withFields([
+                        Forms\Components\TextInput::make('address')
+                            ->readonly()
+                            ->columnSpanFull()
+                            ->extraInputAttributes([
+                                'data-google-field' => '{formatted_address}',
+                            ]),
+                        Forms\Components\TextInput::make('lat')
+                            ->readonly()
+                            ->extraInputAttributes([
+                                'data-google-field' => '{latitude}',
+                            ]),
+                        Forms\Components\TextInput::make('lng')
+                            ->readonly()
+                            ->extraInputAttributes([
+                                'data-google-field' => '{longitude}',
+                            ]),
+                    ]),
+                BelongsToManyMultiSelect::make('features')
+                    ->relationship('features', 'name') // Relationship and display column
+                    ->required(),
+                BelongsToManyMultiSelect::make('reasons')
+                    ->relationship('reasons', 'name') // Relationship and display column
+                    ->required(),
+                BelongsToManyMultiSelect::make('tours')
+                    ->relationship('tours', 'title') // Relationship and display column
+                    ->columnSpanFull()
+                    ->required(),
                 SpatieMediaLibraryFileUpload::make('images')
+                    ->required()
                     ->label('Gallery Images')
                     ->multiple() // Allow multiple file uploads
                     ->directory('gallery') // Specify upload directory

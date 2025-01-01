@@ -15,6 +15,7 @@ class Reason extends Model
 
     protected $table = "reasons";
     public $timestamps = false;
+    protected $appends = ['reasons_names_as_array'];
 
     // Relations
     public function hotels()
@@ -25,9 +26,13 @@ class Reason extends Model
     public function names()
     {
         return $this->hasMany('App\Models\ReasonName', 'reason_id');
-    }    
+    }
     public function descriptions()
     {
         return $this->hasMany('App\Models\ReasonDescription', 'reason_id');
-    }    
+    }
+    public function getReasonsNamesAsArrayAttribute()
+    {
+        return $this->names->pluck('name', 'language_id')->toArray();
+    }
 }

@@ -17,8 +17,8 @@ class Name extends Model
 
     protected $table = "hotel_names";
     public $timestamps = false;
-    
-    //Relations 
+
+    //Relations
     public function hotel()
     {
         return $this->belongsTo('App\Models\Hotel\Hotel', 'hotel_id');
@@ -28,5 +28,4 @@ class Name extends Model
     {
         return $this->belongsTo('App\Models\Language', 'language_id');
     }
-
 }
