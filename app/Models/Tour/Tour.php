@@ -132,6 +132,6 @@ class Tour extends Model implements HasMedia
 
     public function getFirstNameAttribute()
     {
-        return $this->titles()->first()->title; // Safely fetch the first name of the destination
+        return $this->titles()->first()?->title; // Safely fetch the first name of the destination
     }
 }
