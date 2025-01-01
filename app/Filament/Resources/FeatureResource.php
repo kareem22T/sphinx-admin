@@ -18,10 +18,9 @@ class FeatureResource extends Resource
 {
     protected static ?string $model = Feature::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-sparkles';
-
+    protected static ?string $navigationIcon = 'stars';
     protected static ?string $navigationGroup = 'Hotel';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {

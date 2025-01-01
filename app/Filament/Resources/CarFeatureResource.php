@@ -18,9 +18,9 @@ class CarFeatureResource extends Resource
 {
     protected static ?string $model = CarFeature::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = 'Cars';
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationIcon = 'steering-wheel';
+    protected static ?string $navigationGroup = 'Car';
+    protected static ?int $navigationSort = 7;
 
     public static function form(Form $form): Form
     {

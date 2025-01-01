@@ -20,7 +20,9 @@ class ResturantResource extends Resource
 {
     protected static ?string $model = Resturant::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'tools-kitchen-2';
+    protected static ?string $navigationGroup = 'Restaurant';
+    protected static ?int $navigationSort = 8;
 
     public static function form(Form $form): Form
     {

@@ -18,9 +18,9 @@ class ReasonResource extends Resource
 {
     protected static ?string $model = Reason::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-question-mark-circle';
+    protected static ?string $navigationIcon = 'heart-question';
     protected static ?string $navigationGroup = 'Hotel';
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {

@@ -18,20 +18,21 @@ class CurrencyResource extends Resource
 {
     protected static ?string $model = Currency::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationIcon = 'brand-cashapp';
+    protected static ?string $navigationGroup = 'Settings';
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {
         $languages = Language::all(); // Fetch languages
         return $form
             ->schema([
-                    Forms\Components\TextInput::make('code')
+                Forms\Components\TextInput::make('code')
                     ->label('Currency Code')
                     ->columnSpan('full')
                     ->required(),
 
-                    Forms\Components\Fieldset::make('Currency Names')
+                Forms\Components\Fieldset::make('Currency Names')
                     ->schema(
                         $languages->map(function ($language) {
                             return Forms\Components\TextInput::make("currency_names_as_array.{$language->id}")
