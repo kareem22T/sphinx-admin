@@ -71,11 +71,6 @@ class Tour extends Model implements HasMedia
         return $this->hasMany('App\Models\Tour\Package\Package', 'tour_id');
     }
 
-    public function gallery()
-    {
-        return $this->hasMany('App\Models\Tour\Gallery', 'tour_id');
-    }
-
     public function ratings()
     {
         return $this->hasMany('App\Models\Tour_rating', 'tour_id');
@@ -98,6 +93,7 @@ class Tour extends Model implements HasMedia
         'includes_as_array',
         'excludes_as_array',
         'first_name',
+        'gallery',
     ];
 
     public function getToursTitlesAsArrayAttribute()
@@ -133,5 +129,16 @@ class Tour extends Model implements HasMedia
     public function getFirstNameAttribute()
     {
         return $this->titles()->first()?->title; // Safely fetch the first name of the destination
+    }
+
+    public function getGalleryAttribute()
+    {
+        $media =  $this->media->map(function ($mediaItem) {
+            return [
+                'path' => $mediaItem->id . '/' . $mediaItem->file_name,
+            ];
+        });
+
+        return $media;
     }
 }
