@@ -77,7 +77,6 @@ class RoomsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordNameAttribute('hotel_id')
             ->columns([
                 Tables\Columns\TextColumn::make('first_name')->label('Name'),
             ])
