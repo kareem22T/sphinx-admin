@@ -25,11 +25,11 @@ class RoomsRelationManager extends RelationManager
 
         return $form
             ->schema([
-                Forms\Components\Fieldset::make('Room Titles')
+                Forms\Components\Fieldset::make('Room Names')
                     ->schema(
                         $languages->map(function ($language) {
-                            return Forms\Components\TextInput::make("room_titles_as_array.{$language->id}")
-                                ->label("Title ({$language->name})")
+                            return Forms\Components\TextInput::make("room_names_as_array.{$language->id}")
+                                ->label("Name ({$language->name})")
                                 ->required();
                         })->toArray()
                     ),
@@ -77,9 +77,9 @@ class RoomsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('tour_id')
+            ->recordNameAttribute('hotel_id')
             ->columns([
-                Tables\Columns\TextColumn::make('first_title')->label('Title'),
+                Tables\Columns\TextColumn::make('first_name')->label('Name'),
             ])
             ->filters([
                 //
@@ -88,10 +88,10 @@ class RoomsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->after(function ($record, $data) {
 
-                        foreach ($data['room_titles_as_array'] as $languageId => $title) {
-                            $record->titles()->create([
+                        foreach ($data['room_names_as_array'] as $languageId => $name) {
+                            $record->names()->create([
                                 'language_id' => $languageId,
-                                'title' => $title,
+                                'name' => $name,
                             ]);
                         }
                         foreach ($data['room_descriptions_as_array'] as $languageId => $description) {
@@ -112,14 +112,14 @@ class RoomsRelationManager extends RelationManager
                 Tables\Actions\EditAction::make()
                     ->after(function ($record, $data) {
 
-                        foreach ($data['room_titles_as_array'] as $languageId => $title) {
-                            $roomTitle = $record->titles()->firstOrNew([
+                        foreach ($data['room_names_as_array'] as $languageId => $name) {
+                            $roomName = $record->names()->firstOrNew([
                                 'language_id' => $languageId,
-                                'room_id' => $title,
+                                'room_id' => $name,
                             ]);
 
-                            $roomTitle->title = $title;
-                            $roomTitle->save();
+                            $roomName->name = $name;
+                            $roomName->save();
                         }
                         foreach ($data['room_descriptions_as_array'] as $languageId => $description) {
                             $roomdescription = $record->descriptions()->firstOrNew([
