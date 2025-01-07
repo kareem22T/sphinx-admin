@@ -38,6 +38,16 @@ class EditReason extends EditRecord
             $name = $reasonName->name;
             $reasonName->save();
         }
+        foreach ($data['reasons_descriptions_as_array'] as $languageId => $description) {
+            $reasonName = $record->names()->firstOrNew([
+                'language_id' => $languageId,
+                'reason_id' => $record->id,
+            ]);
+
+            $reasonName->description = $description;
+            $description = $reasonName->description;
+            $reasonName->save();
+        }
         $record->name = $name;
         $record->save();
     }

@@ -28,6 +28,14 @@ class CreateReason extends CreateRecord
             $prev_name = $name;
         }
 
+        // Example: Create related names
+        foreach ($data['reasons_descriptions_as_array'] as $languageId => $description) {
+            $record->descriptions()->create([
+                'language_id' => $languageId,
+                'description' => $description,
+            ]);
+        }
+
         $record->name = $prev_name;
         $record->save();
     }
