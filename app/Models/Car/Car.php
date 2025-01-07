@@ -34,10 +34,6 @@ class Car extends Model implements HasMedia
     {
         return $this->hasMany('App\Models\Car\Description', 'car_id');
     }
-    public function gallery()
-    {
-        return $this->hasMany('App\Models\Car\Gallery', 'car_id');
-    }
     public function types()
     {
         return $this->hasMany('App\Models\Car\Type', 'car_id');
@@ -48,7 +44,7 @@ class Car extends Model implements HasMedia
         return $this->belongsToMany('App\Models\CarFeature', 'car_features', 'car_id', 'feature_id', 'id', 'id');
     }
 
-    protected $appends = ['car_titles_as_array', 'car_descriptions_as_array', 'car_types_as_array', 'package_prices_as_array'];
+    protected $appends = ['car_titles_as_array', 'car_descriptions_as_array', 'car_types_as_array', 'package_prices_as_array', 'gallery'];
 
     public function getCarTitlesAsArrayAttribute()
     {
@@ -68,5 +64,16 @@ class Car extends Model implements HasMedia
     public function getPackagePricesAsArrayAttribute()
     {
         return $this->prices->pluck('price', 'currency_id')->toArray();
+    }
+
+    public function getGalleryAttribute()
+    {
+        $media =  $this->media->map(function ($mediaItem) {
+            return [
+                'path' => $mediaItem->id . '/' . $mediaItem->file_name,
+            ];
+        });
+
+        return $media;
     }
 }

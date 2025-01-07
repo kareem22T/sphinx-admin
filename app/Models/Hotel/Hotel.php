@@ -62,11 +62,6 @@ class Hotel extends Model implements HasMedia
         return $this->hasMany('App\Models\Hotel\Address', 'hotel_id');
     }
 
-    public function gallery()
-    {
-        return $this->hasMany('App\Models\Hotel\Gallery', 'hotel_id');
-    }
-
     public function rooms()
     {
         return $this->hasMany('App\Models\Hotel\Rooms\Room', 'hotel_id');
@@ -114,7 +109,7 @@ class Hotel extends Model implements HasMedia
         return $this->belongsTo('App\Models\Destination', 'destination_id');
     }
 
-    protected $appends = ['hotel_names_as_array', 'hotel_descriptions_as_array', 'hotel_slogans_as_array', 'hotel_addresses_as_array'];
+    protected $appends = ['hotel_names_as_array', 'hotel_descriptions_as_array', 'hotel_slogans_as_array', 'hotel_addresses_as_array', 'gallery'];
 
     public function getHotelNamesAsArrayAttribute()
     {
@@ -138,5 +133,16 @@ class Hotel extends Model implements HasMedia
     {
         // Transform the related names into an array of [language_id => name]
         return $this->addresses->pluck('address', 'language_id')->toArray();
+    }
+
+    public function getGalleryAttribute()
+    {
+        $media =  $this->media->map(function ($mediaItem) {
+            return [
+                'path' => $mediaItem->id . '/' . $mediaItem->file_name,
+            ];
+        });
+
+        return $media;
     }
 }

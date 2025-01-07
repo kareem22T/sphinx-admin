@@ -12,9 +12,10 @@ use App\Models\Setting;
 
 class HotelController extends Controller
 {
-    public function getHotels(Request $request) {
-        $sortKey =($request->sort && $request->sort == "HP") || ( $request->sort && $request->sort == "LP") ? "lowest_room_price" :"avg_rating";
-        $sortWay = $request->sort && $request->sort == "HP" ? "desc" : ( $request->sort && $request->sort  == "LP" ? "asc" : "desc");
+    public function getHotels(Request $request)
+    {
+        $sortKey = ($request->sort && $request->sort == "HP") || ($request->sort && $request->sort == "LP") ? "lowest_room_price" : "avg_rating";
+        $sortWay = $request->sort && $request->sort == "HP" ? "desc" : ($request->sort && $request->sort  == "LP" ? "asc" : "desc");
         // $currency_id = 2;
         $lang = Language::where("key", $request->lang ? $request->lang : "EN")->first() ? Language::where("key", $request->lang ? $request->lang : "EN")->first() : Language::where("key", "EN")->first();
         $currency_id = Currency::find($request->currency_id) ? Currency::find($request->currency_id)->id : Currency::first()->id;
@@ -22,65 +23,65 @@ class HotelController extends Controller
         $hotels = Hotel::with([
             "names" => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             },
-            "descriptions"=> function ($q) use ($lang) {
+            "descriptions" => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             },
             "addresses" => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             },
             "rooms" => function ($q) use ($lang, $currency_id) {
                 $q->with(["features" => function ($q) use ($lang) {
                     $q->with(["names" => function ($qe) use ($lang) {
                         if ($lang)
-                        $qe->where("language_id", $lang->id);
+                            $qe->where("language_id", $lang->id);
                     }]);
-                }, "gallery", "names" => function ($q) use ($lang) {
+                },  "names" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
-                },"descriptions" => function ($q) use ($lang) {
+                        $q->where("language_id", $lang->id);
+                }, "descriptions" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 }, "prices" => function ($q) use ($lang, $currency_id) {
                     $q->with(['currency' => function ($Q) use ($lang) {
                         $Q->with(["names" => function ($q) use ($lang) {
                             if ($lang)
-                            $q->where("language_id", $lang->id);
+                                $q->where("language_id", $lang->id);
                         }]);
                     }])->where("currency_id", $currency_id);
                 }]);
             },
             "slogans" => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             },
-            "gallery",
+
             "features" => function ($q) use ($lang) {
                 $q->with(["names" => function ($qe) use ($lang) {
                     if ($lang)
-                    $qe->where("language_id", $lang->id);
+                        $qe->where("language_id", $lang->id);
                 }]);
             },
             "reasons" => function ($q) use ($lang) {
                 $q->with(["names" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 }, "descriptions" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 }]);
             },
-            "tours" => function($q) use ($lang) {
+            "tours" => function ($q) use ($lang) {
                 $q->with(["titles" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 }, "intros" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
-                }, "gallery"]);
+                        $q->where("language_id", $lang->id);
+                }]);
             }
         ])->when($request->filter && $request->filter["minPrice"] && $request->filter["maxPrice"], function ($query) use ($request) {
             return $query->whereBetween('lowest_room_price', [$request->filter["minPrice"], $request->filter["maxPrice"]]);
@@ -89,91 +90,95 @@ class HotelController extends Controller
         })->orderBy($sortKey, $sortWay)->get();
 
         return response()->json(
-            $hotels
-        , 200);
+            $hotels,
+            200
+        );
     }
 
-    public function getRomms(Request $request) {
+    public function getRomms(Request $request)
+    {
         // $currency_id = 2;
         $lang = Language::where("key", $request->lang)->first();
         $hotels = Room::latest()->with(["features" => function ($q) use ($lang) {
             $q->with(["names" => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             }]);
-        }, "gallery", "names" => function ($q) use ($lang) {
+        },  "names" => function ($q) use ($lang) {
             if ($lang)
-            $q->where("language_id", $lang->id);
-        },"descriptions" => function ($q) use ($lang) {
+                $q->where("language_id", $lang->id);
+        }, "descriptions" => function ($q) use ($lang) {
             if ($lang)
-            $q->where("language_id", $lang->id);
+                $q->where("language_id", $lang->id);
         }, "prices", "hotel" => function ($q) use ($lang) {
             $q->with([
                 "ratings",
                 "names" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 },
-                "descriptions"=> function ($q) use ($lang) {
+                "descriptions" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 },
                 "addresses" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 },
                 "rooms" => function ($q) use ($lang) {
                     $q->with(["features" => function ($q) use ($lang) {
                         $q->with(["names" => function ($qe) use ($lang) {
                             if ($lang)
-                            $qe->where("language_id", $lang->id);
+                                $qe->where("language_id", $lang->id);
                         }]);
-                    }, "gallery", "names" => function ($q) use ($lang) {
+                    },  "names" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
-                    },"descriptions" => function ($q) use ($lang) {
+                            $q->where("language_id", $lang->id);
+                    }, "descriptions" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
+                            $q->where("language_id", $lang->id);
                     }, "prices"]);
                 },
                 "slogans" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 },
-                "gallery",
+
                 "features" => function ($q) use ($lang) {
                     $q->with(["names" => function ($qe) use ($lang) {
                         if ($lang)
-                        $qe->where("language_id", $lang->id);
+                            $qe->where("language_id", $lang->id);
                     }]);
                 },
                 "reasons" => function ($q) use ($lang) {
                     $q->with(["names" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
+                            $q->where("language_id", $lang->id);
                     }, "descriptions" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
+                            $q->where("language_id", $lang->id);
                     }]);
                 },
-                "tours" => function($q) use ($lang) {
+                "tours" => function ($q) use ($lang) {
                     $q->with(["titles" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
+                            $q->where("language_id", $lang->id);
                     }, "intros" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
-                    }, "gallery"]);
+                            $q->where("language_id", $lang->id);
+                    }]);
                 }
             ]);
         }])->take(15)->get();
 
         return response()->json(
-            $hotels
-        , 200);
+            $hotels,
+            200
+        );
     }
 
-    public function getCottages(Request $request) {
+    public function getCottages(Request $request)
+    {
         // $currency_id = 2;
         $lang = Language::where("key", $request->lang ? $request->lang : "EN")->first() ? Language::where("key", $request->lang ? $request->lang : "EN")->first() : Language::where("key", "EN")->first();
         $currency_id = Currency::find($request->currency_id) ? Currency::find($request->currency_id)->id : Currency::first()->id;
@@ -181,65 +186,65 @@ class HotelController extends Controller
             "ratings",
             "names" => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             },
-            "descriptions"=> function ($q) use ($lang) {
+            "descriptions" => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             },
             "addresses" => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             },
             "rooms" => function ($q) use ($lang, $currency_id) {
                 $q->with(["features" => function ($q) use ($lang) {
                     $q->with(["names" => function ($qe) use ($lang) {
                         if ($lang)
-                        $qe->where("language_id", $lang->id);
+                            $qe->where("language_id", $lang->id);
                     }]);
                 }, "names" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 }, "descriptions" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 }, "prices" => function ($q) use ($lang, $currency_id) {
                     $q->with(['currency' => function ($Q) use ($lang) {
                         $Q->with(["names" => function ($q) use ($lang) {
                             if ($lang)
-                            $q->where("language_id", $lang->id);
+                                $q->where("language_id", $lang->id);
                         }]);
                     }])->where("currency_id", $currency_id);
-                }, "gallery"]);
+                }]);
             },
             "slogans" => function ($q) use ($lang) {
                 if ($lang)
-                $q->where("language_id", $lang->id);
+                    $q->where("language_id", $lang->id);
             },
-            "gallery",
+
             "features" => function ($q) use ($lang) {
                 $q->with(["names" => function ($qe) use ($lang) {
                     if ($lang)
-                    $qe->where("language_id", $lang->id);
+                        $qe->where("language_id", $lang->id);
                 }]);
             },
             "reasons" => function ($q) use ($lang) {
                 $q->with(["names" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 }, "descriptions" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 }]);
             },
-            "tours" => function($q) use ($lang) {
+            "tours" => function ($q) use ($lang) {
                 $q->with(["titles" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 }, "intros" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
-                }, "gallery"]);
+                        $q->where("language_id", $lang->id);
+                }]);
             }
         ])->when($request->filter && $request->filter["minPrice"] && $request->filter["maxPrice"], function ($query) use ($request) {
             return $query->whereBetween('lowest_room_price', [$request->filter["minPrice"], $request->filter["maxPrice"]]);
@@ -248,15 +253,17 @@ class HotelController extends Controller
         })->get();
 
         return response()->json(
-            $hotels
-        , 200);
+            $hotels,
+            200
+        );
     }
 
-    public function getHomeHotels(Request $request) {
+    public function getHomeHotels(Request $request)
+    {
         // $currency_id = 2;
         $lang = Language::where("key", $request->lang ? $request->lang : "EN")->first() ? Language::where("key", $request->lang ? $request->lang : "EN")->first() : Language::where("key", "EN")->first();
         $currency_id = Currency::find($request->currency_id) ? Currency::find($request->currency_id)->id : Currency::first()->id;
-        $settings = Setting::where("key", "hotels") ->first();
+        $settings = Setting::where("key", "hotels")->first();
         $hotels = [];
 
 
@@ -265,80 +272,80 @@ class HotelController extends Controller
                 "ratings",
                 "names" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 },
-                "descriptions"=> function ($q) use ($lang) {
+                "descriptions" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 },
                 "addresses" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 },
                 "rooms" => function ($q) use ($lang, $currency_id) {
                     $q->with(["features" => function ($q) use ($lang) {
                         $q->with(["names" => function ($qe) use ($lang) {
                             if ($lang)
-                            $qe->where("language_id", $lang->id);
+                                $qe->where("language_id", $lang->id);
                         }]);
                     }, "names" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
+                            $q->where("language_id", $lang->id);
                     }, "descriptions" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
+                            $q->where("language_id", $lang->id);
                     }, "prices" => function ($q) use ($lang, $currency_id) {
                         $q->with(['currency' => function ($Q) use ($lang) {
                             $Q->with(["names" => function ($q) use ($lang) {
                                 if ($lang)
-                                $q->where("language_id", $lang->id);
+                                    $q->where("language_id", $lang->id);
                             }]);
                         }])->where("currency_id", $currency_id);
-                    }, "gallery"]);
+                    }]);
                 },
                 "slogans" => function ($q) use ($lang) {
                     if ($lang)
-                    $q->where("language_id", $lang->id);
+                        $q->where("language_id", $lang->id);
                 },
-                "gallery",
+
                 "features" => function ($q) use ($lang) {
                     $q->with(["names" => function ($qe) use ($lang) {
                         if ($lang)
-                        $qe->where("language_id", $lang->id);
+                            $qe->where("language_id", $lang->id);
                     }]);
                 },
                 "reasons" => function ($q) use ($lang) {
                     $q->with(["names" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
+                            $q->where("language_id", $lang->id);
                     }, "descriptions" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
+                            $q->where("language_id", $lang->id);
                     }]);
                 },
-                "tours" => function($q) use ($lang) {
+                "tours" => function ($q) use ($lang) {
                     $q->with(["titles" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
+                            $q->where("language_id", $lang->id);
                     }, "intros" => function ($q) use ($lang) {
                         if ($lang)
-                        $q->where("language_id", $lang->id);
-                    }, "gallery"]);
+                            $q->where("language_id", $lang->id);
+                    }]);
                 }
             ])->get();
 
         return response()->json(
-            $hotels
-        , 200);
+            $hotels,
+            200
+        );
     }
 
-    public function getHotelNearstRestaurante(Request $request) {
+    public function getHotelNearstRestaurante(Request $request)
+    {
         $lang = Language::where("key", $request->lang ? $request->lang : "EN")->first();
 
-        $hotel= Hotel::find($request->id);
+        $hotel = Hotel::find($request->id);
 
         return $hotel->nearestRestaurants(10, 10, $lang);
     }
-
-
 }

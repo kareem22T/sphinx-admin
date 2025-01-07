@@ -109,7 +109,6 @@ class TourController extends Controller
                 if ($lang)
                     $q->where("language_id", $lang->id);
             },
-            "gallery",
             "days" => function ($q) use ($lang) {
                 $q->with(["titles" => function ($q) use ($lang) {
                     if ($lang)
@@ -190,7 +189,6 @@ class TourController extends Controller
                     if ($lang)
                         $q->where("language_id", $lang->id);
                 },
-                "gallery",
                 "days" => function ($q) use ($lang) {
                     $q->with(["titles" => function ($q) use ($lang) {
                         if ($lang)
