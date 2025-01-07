@@ -67,8 +67,8 @@ class Room extends Model implements HasMedia
         return $media;
     }
 
-    public function getFirstTitleAttribute()
+    public function getFirstNameAttribute()
     {
-        return $this->titles->first()?->title; // Safely fetch the first title
+        return $this->names->first()?->name; // Safely fetch the first name
     }
 }
