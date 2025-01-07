@@ -54,9 +54,6 @@ class ReasonResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('hotel_id')
-                    ->numeric()
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
             ])

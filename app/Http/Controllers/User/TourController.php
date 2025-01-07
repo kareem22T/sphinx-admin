@@ -172,11 +172,11 @@ class TourController extends Controller
     {
         $lang = Language::where("key", $request->lang ? $request->lang : "EN")->first() ? Language::where("key", $request->lang ? $request->lang : "EN")->first() : Language::where("key", "EN")->first();
         $currency_id = Currency::find($request->currency_id) ? Currency::find($request->currency_id)->id : Currency::first()->id;
-        $settings = Setting::where("key", "tours")->first();
+        $settings = Setting::first();
         $tour = [];
 
         if ($settings) {
-            $tour = Tour::latest()->whereIn('id', json_decode($settings->data))->with([
+            $tour = Tour::latest()->whereIn('id', json_decode($settings->tours))->with([
                 "activities",
                 "ratings" => function ($q) {
                     $q->with("user")->where("approved", true);

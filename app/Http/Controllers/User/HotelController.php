@@ -263,12 +263,12 @@ class HotelController extends Controller
         // $currency_id = 2;
         $lang = Language::where("key", $request->lang ? $request->lang : "EN")->first() ? Language::where("key", $request->lang ? $request->lang : "EN")->first() : Language::where("key", "EN")->first();
         $currency_id = Currency::find($request->currency_id) ? Currency::find($request->currency_id)->id : Currency::first()->id;
-        $settings = Setting::where("key", "hotels")->first();
+        $settings = Setting::first();
         $hotels = [];
 
 
         if ($settings)
-            $hotels = Hotel::whereIn('id', json_decode($settings->data))->with([
+            $hotels = Hotel::whereIn('id', json_decode($settings->hotels))->with([
                 "ratings",
                 "names" => function ($q) use ($lang) {
                     if ($lang)
