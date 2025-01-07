@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Hotel;
 
 use App\Filament\Resources\Hotel\HotelResource\Pages;
 use App\Filament\Resources\Hotel\HotelResource\RelationManagers;
+use App\Filament\Resources\Hotel\HotelResource\RelationManagers\RoomsRelationManager;
 use App\Forms\Components\GooglePlacesField;
 use App\Forms\Components\LocationPicker;
 use App\Models\Hotel\Hotel;
@@ -170,7 +171,7 @@ class HotelResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RoomsRelationManager::class
         ];
     }
 
