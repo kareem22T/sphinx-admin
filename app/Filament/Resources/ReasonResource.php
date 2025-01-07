@@ -39,6 +39,14 @@ class ReasonResource extends Resource
                                 ->required();
                         })->toArray()
                     ),
+                Forms\Components\Fieldset::make('Reasons Description')
+                    ->schema(
+                        $languages->map(function ($language) {
+                            return Forms\Components\TextInput::make("reasons_descriptions_as_array.{$language->id}")
+                                ->label("Description ({$language->name})")
+                                ->required();
+                        })->toArray()
+                    ),
             ]);
     }
 
