@@ -50,3 +50,20 @@ Route::middleware('auth:sanctum')->get('/get-user-messages', [MessangerControlle
 
 
 Route::post('/send-notification', [NotificationController::class, 'sendPushNotification']);
+
+Route::post("/register", [UserController::class, "register"]);
+Route::post("/login", [UserController::class, "login"]);
+Route::middleware('auth:sanctum')->post("/send-token", [UserController::class, "sedToken"]);
+Route::middleware('auth:sanctum')->post("/get-user-notifications", [UserController::class, "getUserNotifications"]);
+Route::middleware('auth:sanctum')->post("/book", [BookingController::class, "create"]);
+Route::middleware('auth:sanctum')->get("/get-bookings", [BookingController::class, "get"]);
+Route::middleware('auth:sanctum')->post('/get-user', [UserController::class, 'getUser']);
+Route::middleware('auth:sanctum')->post('/update-profile', [UserController::class, 'updateUser']);
+Route::middleware('auth:sanctum')->post('/change-password', [UserController::class, 'changePassword']);
+Route::middleware('auth:sanctum')->post('/send-msg', [MessangerController::class, 'send']);
+Route::middleware('auth:sanctum')->post('/rate-hotel', [RateController::class, 'rateHotel']);
+Route::middleware('auth:sanctum')->post('/rate-tour', [RateController::class, 'rateTour']);
+Route::middleware('auth:sanctum')->get('/get-user-messages', [MessangerController::class, 'userMesages']);
+
+
+Route::post('/send-notification', [NotificationController::class, 'sendPushNotification']);
