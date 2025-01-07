@@ -87,7 +87,6 @@ class RoomsRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->after(function ($record, $data) {
-                        Log::info($data);
 
                         foreach ($data['room_titles_as_array'] as $languageId => $title) {
                             $record->titles()->create([
