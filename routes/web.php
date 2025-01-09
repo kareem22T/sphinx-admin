@@ -14,6 +14,7 @@ use App\Http\Controllers\User\DestinationController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\User\SearchController;
 use App\Http\Controllers\NotificationController;
+use App\Filament\Pages\Chat;
 
 Route::get('/', function () {
     return view('welcome');
@@ -50,3 +51,6 @@ Route::middleware('auth:sanctum')->get('/get-user-messages', [MessangerControlle
 
 
 Route::post('/send-notification', [NotificationController::class, 'sendPushNotification']);
+
+
+Route::get('/admin/chat/{userId}', Chat::class)->name('filament.chat');

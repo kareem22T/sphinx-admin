@@ -18,11 +18,14 @@ class Request extends Model
 
     protected $table = "requests";
 
-    //Relations 
+    //Relations
     public function user()
     {
         return $this->belongsTo('App\Models\User', 'user_id');
     }
 
-
+    public function getBookingDetailsAttribute($value)
+    {
+        return json_decode($value);
+    }
 }
