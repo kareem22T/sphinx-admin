@@ -79,7 +79,7 @@ class ResturantResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('c'),
+                TextColumn::make('first_name'),
             ])
             ->filters([
                 //
