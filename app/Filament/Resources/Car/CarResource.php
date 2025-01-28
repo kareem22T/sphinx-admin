@@ -107,13 +107,13 @@ class CarResource extends Resource
                     ->columnSpanFull()
                     ->disk('public')
                     ->panelLayout('grid') // Display uploaded images in a 3-column grid
-                    ->afterStateUpdated(function ($state, callable $set, $record) {
-                        if ($state && $record) {
-                            foreach ($state as $path) {
-                                $record->gallery()->create(['path' => $path]);
-                            }
-                        }
-                    })
+                    // ->afterStateUpdated(function ($state, callable $set, $record) {
+                    //     if ($state && $record) {
+                    //         foreach ($state as $path) {
+                    //             $record->gallery()->create(['path' => $path]);
+                    //         }
+                    //     }
+                    // })
                     ->helperText('You can upload multiple images at once.'),
 
             ]);
