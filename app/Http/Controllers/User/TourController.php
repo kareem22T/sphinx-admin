@@ -176,7 +176,7 @@ class TourController extends Controller
         $tour = [];
 
         if ($settings) {
-            $tour = Tour::latest()->whereIn('id', json_decode($settings->tours))->with([
+            $tour = Tour::latest()->whereIn('id', ($settings->tours))->with([
                 "activities",
                 "ratings" => function ($q) {
                     $q->with("user")->where("approved", true);
