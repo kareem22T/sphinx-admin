@@ -27,6 +27,7 @@ class SettingsController extends Controller
                 'text_ar' => $settings->ad2_description_ar,
                 'text_en' => $settings->ad2_description_en
             ],
+            "main_image" => $settings->main_image,
         ], 200);
     }
 }
