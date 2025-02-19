@@ -33,6 +33,7 @@ class Hotel extends Model implements HasMedia
         "avg_money_rating",
         "avg_location_rating",
         "lowest_room_price",
+        "hotel_rate",
     ];
 
     public $table = "hotels";

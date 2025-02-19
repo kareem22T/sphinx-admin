@@ -84,6 +84,7 @@ class HotelResource extends Resource
                     ->placeholder('Select a type')
                     ->required(),
                 TextInput::make('phone')->columnSpanFull()->required(),
+                TextInput::make('hotel_rate')->numeric()->required(),
                 TextInput::make('check_in')->required(),
                 TextInput::make('check_out')->required(),
                 GoogleAutocomplete::make('google_search')
