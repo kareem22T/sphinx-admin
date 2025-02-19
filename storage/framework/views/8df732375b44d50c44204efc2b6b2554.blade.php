@@ -1,1 +1,0 @@
-<x-filament::loading-indicator class="h5 w-5" wire:loading wire:target="data.google_autocomplete" />

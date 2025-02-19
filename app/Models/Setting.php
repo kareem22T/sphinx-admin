@@ -21,5 +21,6 @@ class Setting extends Model
         'ad2_title_ar',
         'ad2_description_en',
         'ad2_description_ar',
+        'main_image',
     ];
 }

@@ -60,6 +60,7 @@ class SettingResource extends Resource
                 TextInput::make('ad2_title_ar')->label('Ad2 Title (Arabic)'),
                 Textarea::make('ad2_description_en')->label('Ad2 Description (English)'),
                 Textarea::make('ad2_description_ar')->label('Ad2 Description (Arabic)'),
+                FileUpload::make('main_image')->columnSpanFull()->label('Home Image'),
             ]);
     }
 
