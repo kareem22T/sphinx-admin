@@ -23,4 +23,10 @@ class Setting extends Model
         'ad2_description_ar',
         'main_image',
     ];
+
+    // In App\Models\Setting.php
+    protected $casts = [
+        'hotels' => 'array',
+        'tours' => 'array'
+    ];
 }

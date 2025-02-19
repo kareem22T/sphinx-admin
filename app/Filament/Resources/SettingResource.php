@@ -32,24 +32,26 @@ class SettingResource extends Resource
                 MultiSelect::make('hotels')
                     ->label('Select Hotels')
                     ->options(
-                        \App\Models\Hotel\Hotel::all()
+                        Hotel::all()
                             ->mapWithKeys(function ($hotel) {
                                 $name = $hotel->names[0]['name'] ?? null;
                                 return $name ? [$hotel->id => $name] : [];
                             })
                     )
+                    ->saveAsJson()  // This tells Filament to save as JSON array
                     ->placeholder('Choose hotels'),
+
                 MultiSelect::make('tours')
                     ->label('Select Tours')
                     ->options(
-                        \App\Models\Tour\Tour::all()
+                        Tour::all()
                             ->mapWithKeys(function ($tour) {
                                 $title = $tour->titles[0]['title'] ?? null;
                                 return $title ? [$tour->id => $title] : [];
                             })
                     )
+                    ->saveAsJson()  // This tells Filament to save as JSON array
                     ->placeholder('Choose Tours'),
-
                 FileUpload::make('ad_image')->columnSpanFull()->label('Ad Image'),
                 TextInput::make('ad_title_en')->label('Ad Title (English)'),
                 TextInput::make('ad_title_ar')->label('Ad Title (Arabic)'),
