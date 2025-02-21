@@ -8,6 +8,7 @@ class Coupon extends Model
 {
     protected $fillable = [
         "coupon_code",
+        "title",
         "description",
         "discount_percentage",
         "start_date",
