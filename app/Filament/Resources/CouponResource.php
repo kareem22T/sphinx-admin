@@ -8,6 +8,7 @@ use App\Models\Coupon;
 use Filament\Forms;
 use Filament\Forms\Components\BelongsToManyMultiSelect;
 use Filament\Forms\Components\BelongsToSelect;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -50,11 +51,11 @@ class CouponResource extends Resource
                     ->label('Discount Percentage')
                     ->required(),
 
-                DateTimePicker::make('start_date')
+                DatePicker::make('start_date')
                     ->label('Start Date')
                     ->required(),
 
-                DateTimePicker::make('end_date')
+                DatePicker::make('end_date')
                     ->label('End Date')
                     ->required(),
                 Select::make('hotel_id')
