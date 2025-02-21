@@ -10,7 +10,7 @@ class ReelController extends Controller
     // Fetch the latest reels
     public function index()
     {
-        $reels = Reel::latest()->get();
+        $reels = Reel::latest()->take(10)->get();
         return response()->json($reels);
     }
 
