@@ -38,7 +38,9 @@ class ReelResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('text')
+                Tables\Columns\TextColumn::make('text')->label('Text in (English)')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('text_ar')->label('Text in (العربية)')
                     ->searchable(),
                 Tables\Columns\ImageColumn::make('thumbnail')
                     ->searchable(),
