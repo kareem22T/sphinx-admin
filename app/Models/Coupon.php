@@ -15,4 +15,13 @@ class Coupon extends Model
         "hotel_id",
         "tour_id",
     ];
+
+    public function hotel()
+    {
+        return $this->belongsTo('App\Models\Hotel\Hotel', 'hotel_id');
+    }
+    public function tour()
+    {
+        return $this->belongsTo('App\Models\Tour\Tour', 'tour_id');
+    }
 }
