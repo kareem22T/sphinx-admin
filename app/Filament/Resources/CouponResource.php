@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Components\BelongsToManyMultiSelect;
 use Filament\Forms\Components\BelongsToSelect;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -56,23 +57,26 @@ class CouponResource extends Resource
                 DateTimePicker::make('end_date')
                     ->label('End Date')
                     ->required(),
-                BelongsToSelect::make('hotel_id')
-                    ->relationship('hotel', 'name')
+                Select::make('hotel_id')
                     ->label('Select Hotel')
-                    ->searchable()
-                    ->preload()
-                    ->reactive()
-                    ->afterStateUpdated(fn($state, $set) => $set('tour_id', null)) // Clear tour if hotel is selected
-                    ->nullable(),
-
-                BelongsToSelect::make('tour_id')
-                    ->relationship('tours', 'title')
+                    ->options(
+                        \App\Models\Hotel\Hotel::all()
+                            ->mapWithKeys(function ($hotel) {
+                                $name = $hotel->names[0]['name'] ?? null;
+                                return $name ? [$hotel->id => $name] : [];
+                            })
+                    )
+                    ->placeholder('Choose hotel'),
+                Select::make('tour')
                     ->label('Select Tour')
-                    ->searchable()
-                    ->preload()
-                    ->reactive()
-                    ->afterStateUpdated(fn($state, $set) => $set('hotel_id', null)) // Clear hotel if tour is selected
-                    ->nullable(),
+                    ->options(
+                        \App\Models\Tour\Tour::all()
+                            ->mapWithKeys(function ($tour) {
+                                $title = $tour->titles[0]['title'] ?? null;
+                                return $title ? [$tour->id => $title] : [];
+                            })
+                    )
+                    ->placeholder('Choose Tour'),
             ]);
     }
 
