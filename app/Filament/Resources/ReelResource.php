@@ -17,7 +17,9 @@ class ReelResource extends Resource
 {
     protected static ?string $model = Reel::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-video-camera';
+    protected static ?string $navigationGroup = 'Settings';
+    protected static ?int $navigationSort = 14;
 
     public static function form(Form $form): Form
     {
