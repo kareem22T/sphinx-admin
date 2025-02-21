@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Coupons extends Model
+class Coupon extends Model
 {
     protected $fillable = [
         "coupon_code",
+        "description",
         "discount_percentage",
         "start_date",
         "end_date",
