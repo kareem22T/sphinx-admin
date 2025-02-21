@@ -25,7 +25,10 @@ class ReelResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Textarea::make('text')
+                Forms\Components\Textarea::make('text')->label('Text in (English)')
+                    ->required()
+                    ->columnSpanFull(),
+                Forms\Components\Textarea::make('text_ar')->label('Text in (العربية)')
                     ->required()
                     ->columnSpanFull(),
                 Forms\Components\FileUpload::make('thumbnail')
