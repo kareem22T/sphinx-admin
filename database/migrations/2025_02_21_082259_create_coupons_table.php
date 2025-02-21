@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('coupon_code');
             $table->text('description');
             $table->text('title');
-            $table->integar('discount_percentage');
-            $table->integar('hotel_id')->nullable();
-            $table->integar('tour_id')->nullable();
+            $table->integer('discount_percentage');
+            $table->integer('hotel_id')->nullable();
+            $table->integer('tour_id')->nullable();
             $table->date('start_date');
             $table->date('end_date');
             $table->timestamps();
