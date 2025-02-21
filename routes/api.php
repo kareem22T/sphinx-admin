@@ -14,6 +14,7 @@ use App\Http\Controllers\User\DestinationController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\User\SearchController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ReelController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -67,3 +68,8 @@ Route::middleware('auth:sanctum')->get('/get-user-messages', [MessangerControlle
 
 
 Route::post('/send-notification', [NotificationController::class, 'sendPushNotification']);
+
+
+Route::get('/reels', [ReelController::class, 'index']);
+Route::get('/reels/next/{currentReelId}', [ReelController::class, 'next']);
+Route::get('/reels/prev/{currentReelId}', [ReelController::class, 'prev']);
