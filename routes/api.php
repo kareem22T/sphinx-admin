@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CouponController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\HotelController;
 use App\Http\Controllers\User\TourController;
@@ -73,3 +74,5 @@ Route::post('/send-notification', [NotificationController::class, 'sendPushNotif
 Route::get('/reels', [ReelController::class, 'index']);
 Route::get('/reels/next/{currentReelId}', [ReelController::class, 'next']);
 Route::get('/reels/prev/{currentReelId}', [ReelController::class, 'prev']);
+
+Route::post('/coupon/check', [CouponController::class, 'checkCoupon']);

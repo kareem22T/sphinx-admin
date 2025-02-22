@@ -24,7 +24,6 @@ class Setting extends Model
         'main_image',
     ];
 
-    // In App\Models\Setting.php
     protected $casts = [
         'hotels' => 'array',
         'tours' => 'array'

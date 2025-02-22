@@ -10,6 +10,7 @@ use Filament\Forms\Components\BelongsToManyMultiSelect;
 use Filament\Forms\Components\BelongsToSelect;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\MultiSelect;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -58,8 +59,8 @@ class CouponResource extends Resource
                 DatePicker::make('end_date')
                     ->label('End Date')
                     ->required(),
-                Select::make('hotel_id')
-                    ->label('Select Hotel')
+                MultiSelect::make('hotels')
+                    ->label('Select Hotels')
                     ->options(
                         \App\Models\Hotel\Hotel::all()
                             ->mapWithKeys(function ($hotel) {
@@ -67,9 +68,9 @@ class CouponResource extends Resource
                                 return $name ? [$hotel->id => $name] : [];
                             })
                     )
-                    ->placeholder('Choose hotel'),
-                Select::make('tour')
-                    ->label('Select Tour')
+                    ->placeholder('Choose hotels'),
+                MultiSelect::make('tours')
+                    ->label('Select Tours')
                     ->options(
                         \App\Models\Tour\Tour::all()
                             ->mapWithKeys(function ($tour) {
@@ -77,7 +78,7 @@ class CouponResource extends Resource
                                 return $title ? [$tour->id => $title] : [];
                             })
                     )
-                    ->placeholder('Choose Tour'),
+                    ->placeholder('Choose Tours'),
             ]);
     }
 
