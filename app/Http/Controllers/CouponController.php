@@ -17,14 +17,6 @@ class CouponController extends Controller
         ]);
 
         $coupon = Coupon::where('coupon_code', $request->coupon_code)
-            ->where(function ($query) use ($request) {
-                if ($request->filled('tour_id')) {
-                    $query->whereJsonContains('tours', $request->tour_id);
-                }
-                if ($request->filled('hotel_id')) {
-                    $query->whereJsonContains('hotels', $request->hotel_id);
-                }
-            })
             ->whereDate('start_date', '<=', Carbon::now())
             ->whereDate('end_date', '>=', Carbon::now())
             ->first();
