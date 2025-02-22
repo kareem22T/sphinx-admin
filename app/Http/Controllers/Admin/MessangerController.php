@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -13,8 +14,9 @@ use App\Models\User;
 class MessangerController extends Controller
 {
     use DataFormController, PushNotificationTrait;
-    public function getChats() {
-        $chats = User::with(["messages" => function($q) {
+    public function getChats()
+    {
+        $chats = User::with(["messages" => function ($q) {
             $q->latest();
         }])->whereHas("messages")->take(100)->get();
 
@@ -26,11 +28,12 @@ class MessangerController extends Controller
         return $sortedChats->values()->all(); // Return the collection as an array
     }
 
-    public function send(Request $request) {
+    public function send(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'msg' => 'required',
             'user_id' => 'required',
-        ], );
+        ],);
 
         if ($validator->fails()) {
             return $this->jsondata(false, null, 'Send failed', [$validator->errors()->first()], []);
@@ -45,15 +48,15 @@ class MessangerController extends Controller
                 "is_user_sender" => false,
                 "type" => 1,
             ]
-            );
+        );
 
         $serverKey = 'AAAA-0IfxKc:APA91bEose-nnQ_9aWfGbJkJCx8c-w66gahaB5BgS3TXVKWDph-Wd41myHvV9ME-yjwUAARdH9_xC9b8nLUn6MCaKto3kKyn40cL3jnO1kGrqo3lDrW4uPY7cNSRLCTcNaNOdyQG8mT8';
         $deviceToken = "/topics/MsgUser_" . $request->user_id;
 
         $response = Http::withHeaders([
-                'Authorization' => 'key=' . $serverKey,
-                'Content-Type' => 'application/json',
-            ])
+            'Authorization' => 'key=' . $serverKey,
+            'Content-Type' => 'application/json',
+        ])
             ->post('https://fcm.googleapis.com/fcm/send', [
                 'to' => $deviceToken,
                 'notification' => [
@@ -67,10 +70,11 @@ class MessangerController extends Controller
             return true;
     }
 
-    public function getChat(Request $request) {
+    public function getChat(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'user_id' => 'required',
-        ], );
+        ],);
 
         if ($validator->fails()) {
             return $this->jsondata(false, null, 'Send failed', [$validator->errors()->first()], []);
@@ -84,14 +88,15 @@ class MessangerController extends Controller
 
         return $user;
     }
-    public function testPush () {
+    public function testPush()
+    {
         $serverKey = 'AAAA-0IfxKc:APA91bEose-nnQ_9aWfGbJkJCx8c-w66gahaB5BgS3TXVKWDph-Wd41myHvV9ME-yjwUAARdH9_xC9b8nLUn6MCaKto3kKyn40cL3jnO1kGrqo3lDrW4uPY7cNSRLCTcNaNOdyQG8mT8';
         $deviceToken = "/topics/adminMessagesChannel";
 
         $response = Http::withHeaders([
-                'Authorization' => 'key=' . $serverKey,
-                'Content-Type' => 'application/json',
-            ])
+            'Authorization' => 'key=' . $serverKey,
+            'Content-Type' => 'application/json',
+        ])
             ->post('https://fcm.googleapis.com/fcm/send', [
                 'to' => $deviceToken,
                 'notification' => [
@@ -111,11 +116,10 @@ class MessangerController extends Controller
             return $errorData = $response->json();
             // Handle the error data
         }
-
     }
 
-    public function pushNotificationToAll(Request $request) {
+    public function pushNotificationToAll(Request $request)
+    {
         return $this->pushNotification($request->title, $request->msg);
     }
-
 }

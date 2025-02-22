@@ -79,7 +79,10 @@ class TourResource extends Resource
                 BelongsToManyMultiSelect::make('activities')
                     ->relationship('activities', 'name_en') // Relationship and display column
                     ->required(),
-
+                Select::make('price_type')->options([
+                    'per_person' => 'Per Person',
+                    'per_two_persons' => 'Per Two Persons',
+                ]),
 
                 Forms\Components\TextInput::make('expired_date')
                     ->label('Tour Expired date')

@@ -21,6 +21,7 @@ class Tour extends Model implements HasMedia
         "num_of_ratings",
         "destination_id",
         "lowest_package_price",
+        "price_type"
     ];
 
     public $table = "tours";
