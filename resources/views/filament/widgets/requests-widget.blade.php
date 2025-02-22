@@ -42,10 +42,12 @@
                                 <h4 class="text-lg font-bold">Hotel: {{ $request->booking_details->hotel }}</h4>
                                 <p>Room: {{ $request->booking_details->room }}</p>
                                 <p>Persons: {{ $request->booking_details->persons }}</p>
+                                <p>Price: {{ $request->booking_details->price }}</p>
                             @elseif ($request->booking_details->type === 'tour')
                                 <h4 class="text-lg font-bold">Tour: {{ $request->booking_details->tour }}</h4>
                                 <p>Package: {{ $request->booking_details->package }}</p>
                                 <p>Persons: {{ $request->booking_details->persons }}</p>
+                                <p>Price: {{ $request->booking_details->price }}</p>
                             @endif
                             <p>Phone: {{ $request->booking_details->phone }}</p>
                             <p>Email: {{ $request->user->email }}</p>
