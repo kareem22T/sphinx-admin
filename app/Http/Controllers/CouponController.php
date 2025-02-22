@@ -12,8 +12,8 @@ class CouponController extends Controller
     {
         $request->validate([
             'coupon_code' => 'required|string',
-            'tour_id' => 'nullable|string',
-            'hotel_id' => 'nullable|string',
+            'tour_id' => 'nullable|integer',
+            'hotel_id' => 'nullable|integer',
         ]);
 
         $coupon = Coupon::where('coupon_code', $request->coupon_code)
