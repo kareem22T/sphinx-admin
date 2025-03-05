@@ -53,7 +53,7 @@ class Chat extends Page
             "New Message",
             $message->msg,
             null,
-            'MsgUser_' + $message->user_id,
+            'MsgUser_' . $message->user_id,
         );
 
         $this->refreshChat();
