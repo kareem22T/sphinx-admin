@@ -5,6 +5,7 @@ namespace App\Filament\Pages;
 use Filament\Pages\Page;
 use App\Models\Message;
 use App\Models\User;
+use App\Traits\PushNotificationTrait;
 
 class Chat extends Page
 {
@@ -35,7 +36,7 @@ class Chat extends Page
     {
         $this->validate(['currentMessage' => 'required']);
 
-        Message::create([
+        $message = Message::create([
             'msg' => $this->currentMessage,
             'user_id' => $this->chat->id,
             'is_user_sender' => false,
@@ -43,6 +44,18 @@ class Chat extends Page
         ]);
 
         $this->currentMessage = '';
+
+        $trait = new class {
+            use PushNotificationTrait;
+        };
+
+        $trait->pushNotification(
+            "New Message",
+            $message->msg,
+            null,
+            'MsgUser_' + $message->user_id,
+        );
+
         $this->refreshChat();
     }
 

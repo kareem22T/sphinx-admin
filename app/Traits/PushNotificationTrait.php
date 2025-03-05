@@ -8,15 +8,8 @@ use App\Models\Notification;
 
 trait PushNotificationTrait
 {
-    public function pushNotification($title, $body, $user_id = null, $data = null)
+    public function pushNotification($title, $body, $user_id = null, $topic = 'all_users', $data = null)
     {
-        // Create a new notification record
-        $CreateNotification = Notification::create([
-            "user_id" => $user_id,
-            "title" => $title,
-            "body" => $body,
-        ]);
-
         // Initialize the Google Client
         $client = new Google_Client();
         $client->setAuthConfig(storage_path('app/sphinx-travel-d17f5-firebase-adminsdk-vxcus-773161a904.json'));  // Load the service account JSON file
@@ -27,12 +20,10 @@ trait PushNotificationTrait
 
         // Determine if we are using a token or a topic
         if ($user_id) {
-            // Fetch the user's device token from the database or however it's stored
-            // $deviceToken = "user's_device_token";
             $deviceToken = $this->getUserDeviceToken($user_id);  // Create a method to fetch this if needed
             $messageTarget = ['token' => $deviceToken];  // Use 'token' for device-specific push
         } else {
-            $messageTarget = ['topic' => 'all_users'];  // Use 'topic' for broadcast
+            $messageTarget = ['topic' => $topic ?? 'all_users'];  // Use 'topic' for broadcast
         }
 
         // Send the push notification
