@@ -112,8 +112,8 @@ class PackagesRelationManager extends RelationManager
                         }
                         foreach ($data['package_prices_as_array'] as $currencyId => $price) {
                             $packageprice = $record->prices()->firstOrNew([
-                                'language_id' => $currencyId,
-                                'package_id' => $price,
+                                'currency_id' => $currencyId,
+                                'price' => $price,
                             ]);
 
                             $packageprice->price = $price;
