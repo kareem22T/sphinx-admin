@@ -11,8 +11,10 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Container\Attributes\Log;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Log as FacadesLog;
 
 class RoomsRelationManager extends RelationManager
 {
@@ -110,7 +112,7 @@ class RoomsRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->after(function ($record, $data) {
-
+                        FacadesLog::info($data['room_prices_as_array']);
                         foreach ($data['room_names_as_array'] as $languageId => $name) {
                             $roomName = $record->names()->firstOrNew([
                                 'language_id' => $languageId,
