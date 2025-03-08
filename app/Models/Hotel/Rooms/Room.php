@@ -42,7 +42,7 @@ class Room extends Model implements HasMedia
         return $this->belongsToMany('App\Models\Feature', 'room_features', 'room_id', 'feature_id', 'id', 'id');
     }
 
-    protected $appends = ['room_names_as_array', 'room_descriptions_as_array', 'gallery'];
+    protected $appends = ['room_names_as_array', 'room_descriptions_as_array', 'room_prices_as_array', 'gallery'];
 
     public function getRoomNamesAsArrayAttribute()
     {
@@ -54,6 +54,12 @@ class Room extends Model implements HasMedia
     {
         // Transform the related names into an array of [language_id => name]
         return $this->descriptions->pluck('description', 'language_id')->toArray();
+    }
+
+    public function getRoomPricesAsArrayAttribute()
+    {
+        // Transform the related names into an array of [language_id => name]
+        return $this->prices->pluck('price', 'currency_id')->toArray();
     }
 
     public function getGalleryAttribute()
