@@ -134,7 +134,7 @@ class RoomsRelationManager extends RelationManager
                                 'currency_id' => $currencyId,
                             ]);
 
-                            FacadesLog::info($roomprice);
+                            FacadesLog::info($record->prices());
 
                             $roomprice->price = $price;
                             $roomprice->save();
