@@ -11,10 +11,8 @@ use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Container\Attributes\Log;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Log as FacadesLog;
 
 class RoomsRelationManager extends RelationManager
 {
@@ -111,35 +109,55 @@ class RoomsRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->after(function ($record, $data) {
-                        FacadesLog::info($data['room_prices_as_array']);
-                        foreach ($data['room_names_as_array'] as $languageId => $name) {
-                            $roomName = $record->names()->firstOrNew([
-                                'language_id' => $languageId,
-                            ]);
+                ->after(function ($record, $data) {
+                    // Handle room names
+                    foreach ($data['room_names_as_array'] as $languageId => $name) {
+                        $roomName = $record->names()->firstOrNew([
+                            'language_id' => $languageId,
+                        ]);
 
-                            $roomName->name = $name;
-                            $roomName->save();
-                        }
-                        foreach ($data['room_descriptions_as_array'] as $languageId => $description) {
-                            $roomdescription = $record->descriptions()->firstOrNew([
-                                'language_id' => $languageId,
-                            ]);
+                        $roomName->name = $name;
+                        $roomName->save();
 
-                            $roomdescription->description = $description;
-                            $roomdescription->save();
-                        }
-                        foreach ($data['room_prices_as_array'] as $currencyId => $price) {
-                            $roomprice = $record->prices()->firstOrNew([
-                                'currency_id' => $currencyId,
-                            ]);
+                        // Delete any other records except the one just saved
+                        $record->names()
+                            ->where('language_id', $languageId)
+                            ->where('id', '!=', $roomName->id)
+                            ->delete();
+                    }
 
-                            FacadesLog::info($record->prices()->get());
+                    // Handle room descriptions
+                    foreach ($data['room_descriptions_as_array'] as $languageId => $description) {
+                        $roomDescription = $record->descriptions()->firstOrNew([
+                            'language_id' => $languageId,
+                        ]);
 
-                            $roomprice->price = $price;
-                            $roomprice->save();
-                        }
-                    }),
+                        $roomDescription->description = $description;
+                        $roomDescription->save();
+
+                        // Delete any other records except the one just saved
+                        $record->descriptions()
+                            ->where('language_id', $languageId)
+                            ->where('id', '!=', $roomDescription->id)
+                            ->delete();
+                    }
+
+                    // Handle room prices
+                    foreach ($data['room_prices_as_array'] as $currencyId => $price) {
+                        $roomPrice = $record->prices()->firstOrNew([
+                            'currency_id' => $currencyId,
+                        ]);
+
+                        $roomPrice->price = $price;
+                        $roomPrice->save();
+
+                        // Delete any other records except the one just saved
+                        $record->prices()
+                            ->where('currency_id', $currencyId)
+                            ->where('id', '!=', $roomPrice->id)
+                            ->delete();
+                    }
+                }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
