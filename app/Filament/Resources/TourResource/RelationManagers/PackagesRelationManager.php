@@ -89,37 +89,57 @@ class PackagesRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->after(function ($record, $data) {
-                        Log::info($data);
+                ->after(function ($record, $data) {
+                    Log::info($data);
 
-                        foreach ($data['package_titles_as_array'] as $languageId => $title) {
-                            $packageTitle = $record->titles()->firstOrNew([
-                                'language_id' => $languageId,
-                                'package_id' => $title,
-                            ]);
+                    // Handle package titles
+                    foreach ($data['package_titles_as_array'] as $languageId => $title) {
+                        $packageTitle = $record->titles()->firstOrNew([
+                            'language_id' => $languageId,
+                        ]);
 
-                            $packageTitle->title = $title;
-                            $packageTitle->save();
-                        }
-                        foreach ($data['package_descriptions_as_array'] as $languageId => $description) {
-                            $packagedescription = $record->descriptions()->firstOrNew([
-                                'language_id' => $languageId,
-                                'package_id' => $description,
-                            ]);
+                        $packageTitle->title = $title;
+                        $packageTitle->save();
 
-                            $packagedescription->description = $description;
-                            $packagedescription->save();
-                        }
-                        foreach ($data['package_prices_as_array'] as $currencyId => $price) {
-                            $packageprice = $record->prices()->firstOrNew([
-                                'currency_id' => $currencyId,
-                                'price' => $price,
-                            ]);
+                        // Delete any other records except the one just saved
+                        $record->titles()
+                            ->where('language_id', $languageId)
+                            ->where('id', '!=', $packageTitle->id)
+                            ->delete();
+                    }
 
-                            $packageprice->price = $price;
-                            $packageprice->save();
-                        }
-                    }),
+                    // Handle package descriptions
+                    foreach ($data['package_descriptions_as_array'] as $languageId => $description) {
+                        $packageDescription = $record->descriptions()->firstOrNew([
+                            'language_id' => $languageId,
+                        ]);
+
+                        $packageDescription->description = $description;
+                        $packageDescription->save();
+
+                        // Delete any other records except the one just saved
+                        $record->descriptions()
+                            ->where('language_id', $languageId)
+                            ->where('id', '!=', $packageDescription->id)
+                            ->delete();
+                    }
+
+                    // Handle package prices
+                    foreach ($data['package_prices_as_array'] as $currencyId => $price) {
+                        $packagePrice = $record->prices()->firstOrNew([
+                            'currency_id' => $currencyId,
+                        ]);
+
+                        $packagePrice->price = $price;
+                        $packagePrice->save();
+
+                        // Delete any other records except the one just saved
+                        $record->prices()
+                            ->where('currency_id', $currencyId)
+                            ->where('id', '!=', $packagePrice->id)
+                            ->delete();
+                    }
+                }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
