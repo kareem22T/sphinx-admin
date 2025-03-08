@@ -131,8 +131,8 @@ class RoomsRelationManager extends RelationManager
                         }
                         foreach ($data['room_prices_as_array'] as $currencyId => $price) {
                             $roomprice = $record->prices()->firstOrNew([
-                                'language_id' => $currencyId,
-                                'room_id' => $price,
+                                'currency_id' => $currencyId,
+                                'price' => $price,
                             ]);
 
                             $roomprice->price = $price;
