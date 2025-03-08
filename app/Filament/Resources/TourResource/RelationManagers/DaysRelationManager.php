@@ -76,29 +76,39 @@ class DaysRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
-                    ->after(function ($record, $data) {
-                        Log::info($record);
-                        Log::info($data);
+                ->after(function ($record, $data) {
+                    // Handle day titles
+                    foreach ($data['day_titles_as_array'] as $languageId => $title) {
+                        $dayTitle = $record->titles()->firstOrNew([
+                            'language_id' => $languageId,
+                        ]);
 
-                        foreach ($data['day_titles_as_array'] as $languageId => $title) {
-                            $dayTitle = $record->titles()->firstOrNew([
-                                'language_id' => $languageId,
-                                'day_id' => $title,
-                            ]);
+                        $dayTitle->title = $title;
+                        $dayTitle->save();
 
-                            $dayTitle->title = $title;
-                            $dayTitle->save();
-                        }
-                        foreach ($data['day_descriptions_as_array'] as $languageId => $description) {
-                            $daydescription = $record->descriptions()->firstOrNew([
-                                'language_id' => $languageId,
-                                'day_id' => $description,
-                            ]);
+                        // Delete any other records except the one just saved
+                        $record->titles()
+                            ->where('language_id', $languageId)
+                            ->where('id', '!=', $dayTitle->id)
+                            ->delete();
+                    }
 
-                            $daydescription->description = $description;
-                            $daydescription->save();
-                        }
-                    }),
+                    // Handle day descriptions
+                    foreach ($data['day_descriptions_as_array'] as $languageId => $description) {
+                        $dayDescription = $record->descriptions()->firstOrNew([
+                            'language_id' => $languageId,
+                        ]);
+
+                        $dayDescription->description = $description;
+                        $dayDescription->save();
+
+                        // Delete any other records except the one just saved
+                        $record->descriptions()
+                            ->where('language_id', $languageId)
+                            ->where('id', '!=', $dayDescription->id)
+                            ->delete();
+                    }
+                }),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
