@@ -114,7 +114,6 @@ class RoomsRelationManager extends RelationManager
                         foreach ($data['room_names_as_array'] as $languageId => $name) {
                             $roomName = $record->names()->firstOrNew([
                                 'language_id' => $languageId,
-                                'room_id' => $name,
                             ]);
 
                             $roomName->name = $name;
@@ -123,7 +122,6 @@ class RoomsRelationManager extends RelationManager
                         foreach ($data['room_descriptions_as_array'] as $languageId => $description) {
                             $roomdescription = $record->descriptions()->firstOrNew([
                                 'language_id' => $languageId,
-                                'room_id' => $description,
                             ]);
 
                             $roomdescription->description = $description;
@@ -132,7 +130,6 @@ class RoomsRelationManager extends RelationManager
                         foreach ($data['room_prices_as_array'] as $currencyId => $price) {
                             $roomprice = $record->prices()->firstOrNew([
                                 'currency_id' => $currencyId,
-                                'price' => $price,
                             ]);
 
                             $roomprice->price = $price;
