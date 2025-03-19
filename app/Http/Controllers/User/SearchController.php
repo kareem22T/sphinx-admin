@@ -106,6 +106,7 @@ class SearchController extends Controller
         $sortWay = $request->sort && $request->sort == "HP" ? "desc" : ($request->sort && $request->sort  == "LP" ? "asc" : "desc");
 
         $tours = Tour::with([
+            "activities",
             "ratings" => function ($q) {
                 $q->with("user")->where("approved", true);
             },
