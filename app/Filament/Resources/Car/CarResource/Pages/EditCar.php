@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Car\CarResource\Pages;
 use App\Filament\Resources\Car\CarResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Support\Facades\Log;
 
 class EditCar extends EditRecord
 {
@@ -20,51 +21,46 @@ class EditCar extends EditRecord
 
     protected function afterSave(): void
     {
-        // Access the saved record
         $record = $this->record;
-
-        // Access the form data
         $data = $this->data;
 
-        // Update or create car names
         foreach ($data['car_titles_as_array'] as $languageId => $name) {
             $carName = $record->titles()->firstOrNew([
                 'language_id' => $languageId,
                 'car_id' => $record->id,
             ]);
-
             $carName->title = $name;
             $carName->save();
+            $record->titles()->where('language_id', $languageId)->where('id', '!=', $carName->id)->delete();
         }
 
-        // Update or create car descriptions
         foreach ($data['car_descriptions_as_array'] as $languageId => $description) {
             $carDescription = $record->descriptions()->firstOrNew([
                 'language_id' => $languageId,
                 'car_id' => $record->id,
             ]);
-
             $carDescription->description = $description;
             $carDescription->save();
+            $record->descriptions()->where('language_id', $languageId)->where('id', '!=', $carDescription->id)->delete();
         }
-        // Update or create car types
+
         foreach ($data['car_types_as_array'] as $languageId => $type) {
-            $cartype = $record->types()->firstOrNew([
+            $carType = $record->types()->firstOrNew([
                 'language_id' => $languageId,
                 'car_id' => $record->id,
             ]);
-
-            $cartype->type = $type;
-            $cartype->save();
+            $carType->type = $type;
+            $carType->save();
+            $record->types()->where('language_id', $languageId)->where('id', '!=', $carType->id)->delete();
         }
 
         foreach ($data['package_prices_as_array'] as $currencyId => $price) {
-            $packageprice = $record->prices()->firstOrNew([
+            $packagePrice = $record->prices()->firstOrNew([
                 'currency_id' => $currencyId,
             ]);
-
-            $packageprice->price = $price;
-            $packageprice->save();
+            $packagePrice->price = $price;
+            $packagePrice->save();
+            $record->prices()->where('currency_id', $currencyId)->where('id', '!=', $packagePrice->id)->delete();
         }
     }
 }
