@@ -14,6 +14,10 @@ class RestaurantController extends Controller
         $lang = Language::where("key", $request->lang ? $request->lang : "EN")->first();
 
         $limit = 25;
+        return Resturant::select('*')
+        ->take($limit)
+        ->get();
+
         if ($request->lat && $request->lng) :
         $maxDistance = 10;
         $haversine = "(6371 * acos(cos(radians($request->lat)) * cos(radians(lat)) * cos(radians(lng) - radians($request->lng)) + sin(radians($request->lat)) * sin(radians(lat))))";
