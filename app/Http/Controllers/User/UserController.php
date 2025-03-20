@@ -253,4 +253,26 @@ class UserController extends Controller
             }
         }
     }
+
+    public function deleteAccount(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        try {
+            // Delete related records
+            $user->bookings()->delete();
+            $user->messages()->delete();
+
+            // Delete the user
+            $user->delete();
+
+            return response()->json(['message' => 'Account deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete account', 'error' => $e->getMessage()], 500);
+        }
+    }
 }
