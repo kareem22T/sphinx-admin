@@ -326,9 +326,7 @@ class UserController extends Controller
             "email" => ["required", "email"],
             "code" => ["required"],
             'password' => [
-                'required', // Required only if joined_with is 1
-                'min:8',
-                'regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]+$/u',
+                'required',
                 'confirmed'
             ],
         ], [
