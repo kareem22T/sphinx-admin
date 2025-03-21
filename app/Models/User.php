@@ -28,6 +28,8 @@ class User extends Authenticatable
         'email',
         'password',
         'apsn_token',
+        'phone_last_verfication_code',
+        'email_last_verfication_code_expird_at'
     ];
 
     /**

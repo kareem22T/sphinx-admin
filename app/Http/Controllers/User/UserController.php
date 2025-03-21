@@ -13,6 +13,7 @@ use App\Traits\PushNotificationTrait;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\SavePhotoTrait;
 use App\Traits\SendEmailTrait;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -231,7 +232,7 @@ class UserController extends Controller
     public function getUserNotifications(Request $request) {
         $user = $request->user();
 
-        $notifications;
+        $notifications = null;
 
         if ($user)
             $notifications = Notification::latest()->where(function($q) use ($user) {
@@ -252,6 +253,177 @@ class UserController extends Controller
                 $this->sendEmail("kotbekareem74@gmail.com", "Hello", $request->token ?? "");
             }
         }
+    }
+
+    public function askEmailCodeForgot(Request $request) {
+        $validator = Validator::make($request->all(), [
+            "email" => ["required", "email"],
+        ], [
+            "email.required" => "من فضلك ادخل بريدك الاكتروني ",
+            "email.email" => "من فضلك ادخل بريد الكتروني صالح",
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsonData(
+                false,
+                null,
+                "",
+                [$validator->errors()->first()],
+                []
+            );
+        }
+
+        $user = User::where("email", $request->email)->first();
+
+        if ($user) {
+            $code = rand(100000, 999999);
+
+            $user->email_last_verfication_code = Hash::make($code);
+            $user->email_last_verfication_code_expird_at = Carbon::now()->addMinutes(10)->timezone('Europe/Istanbul');
+            $user->save();
+
+            $msg_title = "تفضل رمز تفعيل بريدك الالكتروني";
+            $msg_content = "<h1>";
+            $msg_content .= "رمز التاكيد هو <span style='color: blue'>" . $code . "</span>";
+            $msg_content .= "</h1>";
+
+            $this->sendEmail($user->email, $msg_title, $msg_content);
+
+            return $this->jsonData(
+                true,
+                null,
+                "تم ارسال رمز التحقق بنجاح عبر الايميل",
+                [],
+                [
+                    "code get expired after 10 minuts",
+                    "the same endpoint you can use for ask resend email"
+                ]
+            );
+        } else {
+            return $this->jsonData(
+                false,
+                null,
+                "",
+                ["هذا الحساب غير مسجل"],
+                []
+            );
+        }
+
+        return $this->jsonData(
+            false,
+            null,
+            "",
+            ["invalid process"],
+            [
+                "code get expired after 10 minuts",
+                "the same endpoint you can use for ask resend email"
+            ]
+        );
+    }
+
+    public function forgetPassword(Request $request) {
+        $validator = Validator::make($request->all(), [
+            "email" => ["required", "email"],
+            "code" => ["required"],
+            'password' => [
+                'required', // Required only if joined_with is 1
+                'min:8',
+                'regex:/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]+$/u',
+                'confirmed'
+            ],
+        ], [
+            "code.required" => "ادخل رمز التاكيد ",
+            "email.required" => "من فضلك ادخل بريدك الاكتروني ",
+            "email.email" => "من فضلك ادخل بريد الكتروني صالح",
+            "password.required" => "ادخل كلمة المرور",
+            "password.min" => "يجب ان تكون كلمة المرور من 8 احرف على الاقل",
+            "password.regex" => "يجب ان تحتوي كلمة المرور علي حروف وارقام ورموز",
+            "password.confirmed" => "كلمة المرور والتاكيد غير متطابقان",
+        ]);
+
+        if ($validator->fails()) {
+            return $this->jsonData(
+                false,
+                null,
+                "",
+                [$validator->errors()->first()],
+                []
+            );
+        }
+
+
+        $user = User::where("email", $request->email)->first();
+        $code = $request->code;
+
+        if ($user) {
+            if ((int) $user->joined_with === 2)
+            return $this->jsonData(
+                true,
+                null,
+                "",
+                ["هذا الحساب مسجل بواسطة جوجل يمكنك الدخول باستخدام التسجيل بجوجل"],
+                [
+                    "code get expired after 10 minuts",
+                    "the same endpoint you can use for ask resend email"
+                ]
+            );
+
+            if ((int) $user->joined_with === 3)
+                return $this->jsonData(
+                    true,
+                    null,
+                    "",
+                    ["هذا الحساب مسجل بواسطة فيسبوك يمكنك الدخول باستخدام التسجيل بفيسبوك"],
+                    [
+                        "code get expired after 10 minuts",
+                        "the same endpoint you can use for ask resend email"
+                    ]
+                );
+
+            if (!Hash::check($code, $user->email_last_verfication_code ? $user->email_last_verfication_code : Hash::make(0000))) {
+                    return $this->jsonData(
+                    false,
+                    null,
+                    "",
+                    ["الرمز غير صحيح"],
+                    []
+                );
+            } else {
+                $timezone = 'Europe/Istanbul'; // Replace with your specific timezone if different
+                $verificationTime = new Carbon($user->email_last_verfication_code_expird_at, $timezone);
+                if ($verificationTime->isPast()) {
+                    return $this->jsonData(
+                        false,
+                        null,
+                        "",
+                        ["الرمز غير ساري"],
+                        []
+                    );
+                } else {
+                    $user->password = Hash::make($request->password);
+                    $user->save();
+
+                    if ($user) {
+                        return $this->jsonData(
+                            true,
+                            null,
+                            "تم تعين كلمة المرور بنجاح ",
+                            [],
+                            []
+                        );
+                    }
+                }
+            }
+        } else {
+            return $this->jsonData(
+                false,
+                null,
+                "",
+                ["هذا الحساب غير مسجل"],
+                []
+            );
+        }
+
     }
 
     public function deleteAccount(Request $request)

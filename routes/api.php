@@ -55,6 +55,8 @@ Route::post('/send-notification', [NotificationController::class, 'sendPushNotif
 
 Route::post("/register", [UserController::class, "register"]);
 Route::post("/login", [UserController::class, "login"]);
+Route::post("/ask-reset-password", [UserController::class, "askEmailCodeForgot"]);
+Route::post("/reset-password", [UserController::class, "forgetPassword"]);
 Route::middleware('auth:sanctum')->delete("/delete-my-account", [UserController::class, "deleteAccount"]);
 Route::middleware('auth:sanctum')->post("/send-token", [UserController::class, "sedToken"]);
 Route::middleware('auth:sanctum')->post("/get-user-notifications", [UserController::class, "getUserNotifications"]);
