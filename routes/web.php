@@ -54,3 +54,8 @@ Route::post('/send-notification', [NotificationController::class, 'sendPushNotif
 
 
 Route::get('/admin/chat/{userId}', Chat::class)->name('filament.chat');
+
+
+Route::get('/delete-my-account', function () {
+    return view('delete-my-account');
+});
